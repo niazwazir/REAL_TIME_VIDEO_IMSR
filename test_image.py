@@ -5,28 +5,16 @@ Created on Fri Mar  6 12:01:22 2020
 
 @author: djoghurt
 """
-import argparse
-import os
-from os import listdir
-
 import numpy as np
 import torch
 from PIL import Image
 from torch.autograd import Variable
 from torchvision.transforms import ToTensor
-from tqdm import tqdm
 
-from data_utils import is_image_file
 from model import Net
 
-import torch
-import torch.nn as nn
-import torch.nn.functional as F
-import torchvision
 from torchvision import transforms
 from data_utils import DatasetFromFolder
-from Jort import Net
-import cv2
 
 UPSCALE_FACTOR = 3
 
