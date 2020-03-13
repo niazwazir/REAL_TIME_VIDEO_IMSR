@@ -16,7 +16,7 @@ from model import Net
 from torchvision import transforms
 from data_utils import DatasetFromFolder
 
-UPSCALE_FACTOR = 3
+UPSCALE_FACTOR = 2
 
 trainset = DatasetFromFolder('data/train', upscale_factor=UPSCALE_FACTOR, input_transform=transforms.ToTensor(),
                                   target_transform=transforms.ToTensor())
@@ -25,12 +25,12 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
                                           shuffle=True, num_workers=2)
 
 " load net "
-PATH = 'jortTrained.pth'
+PATH = 'rikTrained.pth'
 net = Net(UPSCALE_FACTOR)
 net.load_state_dict(torch.load(PATH))
 
-path = 'data/train/SRF_3/data/'
-image_name = '2007_000033.jpg'
+path = 'data/train/scaling_factor_2/data/'
+image_name = 'tt12.bmp'
 
 img = Image.open(path + image_name).convert('YCbCr')
 y, cb, cr = img.split()
