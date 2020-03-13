@@ -3,7 +3,7 @@ import os
 from os import listdir
 from os.path import join
 
-from PIL import Image
+from PIL import Image, ImageFilter
 from torch.utils.data.dataset import Dataset
 from torchvision.transforms import Compose, CenterCrop, Scale
 from tqdm import tqdm
@@ -20,11 +20,15 @@ def is_video_file(filename):
 def calculate_valid_crop_size(crop_size, upscale_factor):
     return crop_size - (crop_size % upscale_factor)
 
+def blur(img):
+    img2 = img.filter(ImageFilter.GaussianBlur(2))
+    return img2
+
 
 def input_transform(crop_size, upscale_factor):
     return Compose([
         CenterCrop(crop_size),
-        Scale(crop_size // upscale_factor, interpolation=Image.BICUBIC)
+        Scale(crop_size // upscale_factor, interpolation=Image.BICUBIC), blur
     ])
 
 
