@@ -25,7 +25,7 @@ trainloader = torch.utils.data.DataLoader(trainset, batch_size=4,
                                           shuffle=True, num_workers=2)
 
 " load net "
-PATH = 'rik_newTrained.pth'
+PATH = 'Trained.pth'
 net = Net(UPSCALE_FACTOR)
 net.load_state_dict(torch.load(PATH))
 
