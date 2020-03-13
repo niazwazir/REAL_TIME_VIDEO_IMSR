@@ -17,7 +17,10 @@ if __name__ == "__main__":
     UPSCALE_FACTOR = 2
     net = Net(upscale_factor=UPSCALE_FACTOR)
     print(net)
-    
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    print(device)
+    if device == 'cuda':
+        net.cuda()
     transform = transforms.Compose([
     # you can add other transformations in this list
     transforms.ToTensor()
@@ -48,7 +51,7 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-2)
     
     " train net "
-    for epoch in range(10):  # loop over the dataset multiple times
+    for epoch in range(3):  # loop over the dataset multiple times
     
         running_loss = 0.0
         for i, data in enumerate(trainloader, 0):
