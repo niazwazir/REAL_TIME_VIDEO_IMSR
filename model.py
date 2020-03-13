@@ -6,7 +6,7 @@ Created on Tue Mar 10 09:21:31 2020
 @author: djoghurt
 """
 import torch.nn as nn
-import torch.nn.functional as F
+from torch import sigmoid, tanh
 
 class Net(nn.Module):
     def __init__(self, upscale_factor):
@@ -18,8 +18,7 @@ class Net(nn.Module):
         self.pixel_shuffle = nn.PixelShuffle(upscale_factor)
 
     def forward(self, x):
-        x = F.tanh(self.conv1(x))
-        x = F.tanh(self.conv2(x))
-        x = F.sigmoid(self.pixel_shuffle(self.conv3(x)))
+        x = tanh(self.conv1(x))
+        x = tanh(self.conv2(x))
+        x = sigmoid(self.pixel_shuffle(self.conv3(x)))
         return x
-    
