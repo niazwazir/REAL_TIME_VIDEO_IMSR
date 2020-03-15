@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 
 def is_image_file(filename):
-    return any(filename.endswith(extension) for extension in ['.png', '.jpg', '.jpeg', '.JPG', '.JPEG', '.PNG'])
+    return any(filename.endswith(extension) for extension in ['.png', '.jpg', '.jpeg', '.JPG', '.JPEG', '.PNG', '.bmp'])
 
 
 def is_video_file(filename):
@@ -37,8 +37,8 @@ def target_transform(crop_size):
 class DatasetFromFolder(Dataset):
     def __init__(self, dataset_dir, upscale_factor, input_transform=None, target_transform=None):
         super(DatasetFromFolder, self).__init__()
-        self.image_dir = dataset_dir + '/SRF_' + str(upscale_factor) + '/data'
-        self.target_dir = dataset_dir + '/SRF_' + str(upscale_factor) + '/target'
+        self.image_dir = dataset_dir + '/scaling_factor_' + str(upscale_factor) + '/data'
+        self.target_dir = dataset_dir + '/scaling_factor_' + str(upscale_factor) + '/target'
         self.image_filenames = [join(self.image_dir, x) for x in listdir(self.image_dir) if is_image_file(x)]
         self.target_filenames = [join(self.target_dir, x) for x in listdir(self.target_dir) if is_image_file(x)]
         self.input_transform = input_transform
@@ -58,16 +58,16 @@ class DatasetFromFolder(Dataset):
         return len(self.image_filenames)
 
 
-def generate_dataset(data_type, upscale_factor):
-    images_name = [x for x in listdir('data/VOC2012/' + data_type) if is_image_file(x)]
+def generate_dataset(data_type, upscale_factor, data_target):
+    images_name = [x for x in listdir('data/' + data_type) if is_image_file(x)]
     crop_size = calculate_valid_crop_size(256, upscale_factor)
     lr_transform = input_transform(crop_size, upscale_factor)
     hr_transform = target_transform(crop_size)
 
-    root = 'data/' + data_type
+    root = 'data/' + data_target
     if not os.path.exists(root):
         os.makedirs(root)
-    path = root + '/SRF_' + str(upscale_factor)
+    path = root + '/scaling_factor_' + str(upscale_factor)
     if not os.path.exists(path):
         os.makedirs(path)
     image_path = path + '/data'
@@ -78,8 +78,8 @@ def generate_dataset(data_type, upscale_factor):
         os.makedirs(target_path)
 
     for image_name in tqdm(images_name, desc='generate ' + data_type + ' dataset with upscale factor = '
-            + str(upscale_factor) + ' from VOC2012'):
-        image = Image.open('data/VOC2012/' + data_type + '/' + image_name)
+            + str(upscale_factor) + ' from dataset'):
+        image = Image.open('data/' + data_type + '/' + image_name)
         target = image.copy()
         image = lr_transform(image)
         target = hr_transform(target)
@@ -90,9 +90,9 @@ def generate_dataset(data_type, upscale_factor):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate Super Resolution Dataset')
-    parser.add_argument('--upscale_factor', default=3, type=int, help='super resolution upscale factor')
+    parser.add_argument('--upscale_factor', default=2, type=int, help='super resolution upscale factor')
     opt = parser.parse_args()
     UPSCALE_FACTOR = opt.upscale_factor
 
-    generate_dataset(data_type='train', upscale_factor=UPSCALE_FACTOR)
-    generate_dataset(data_type='val', upscale_factor=UPSCALE_FACTOR)
+    generate_dataset(data_type='original_data', upscale_factor=UPSCALE_FACTOR, data_target='train')
+    generate_dataset(data_type='val', upscale_factor=UPSCALE_FACTOR, data_target='val')
