@@ -11,7 +11,8 @@ from torchvision import transforms
 from data_utils import DatasetFromFolder
 import torch
 import torch.nn as nn
-
+import pylab
+import matplotlib.pyplot as plt
 
 if __name__ == "__main__":
     UPSCALE_FACTOR = 2
@@ -51,6 +52,16 @@ if __name__ == "__main__":
     optimizer = torch.optim.Adam(net.parameters(), lr=1e-2)
     
     " train net "
+    epochs = []
+    losses = []
+    plt.ion()
+    fig = plt.figure()
+    ax = fig.add_subplot(111)
+    ax.set_ylabel('total loss')
+    ax.set_xlabel('epoch')
+    Ln, = ax.plot([0],[1])
+    pylab.show()
+    
     for epoch in range(1000):  # loop over the dataset multiple times
     
         running_loss = 0.0
@@ -67,12 +78,22 @@ if __name__ == "__main__":
             loss.backward()
             optimizer.step()
     
-            # print statistics
             running_loss += loss.item()
-            if i % 2000 == 1999:    # print every 2000 mini-batches
-                print('[%d, %5d] loss: %.3f' %
-                      (epoch + 1, i + 1, running_loss / 2000))
-                running_loss = 0.0
+            
+        print('[%d, %5d] total loss: %.3f' %
+              (epoch + 1, i + 1, running_loss))
+        epochs.append(epoch+1)
+        losses.append(running_loss)
+        Ln.set_ydata(losses)
+        Ln.set_xdata(epochs)
+        ax.set_xlim(1,epoch+1)
+        ax.set_ylim(0,max(losses))
+        fig.canvas.draw()
+        plt.show()
+        plt.pause(0.1)
+        
+        running_loss = 0.0
+                
     
     print('Finished Training')
     " save "
