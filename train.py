@@ -11,8 +11,12 @@ from torchvision import transforms
 from data_utils import DatasetFromFolder
 import torch
 import torch.nn as nn
+import torch.optim
 import pylab
 import matplotlib.pyplot as plt
+
+
+
 
 if __name__ == "__main__":
     UPSCALE_FACTOR = 2
@@ -44,13 +48,14 @@ if __name__ == "__main__":
     
     testloader = torch.utils.data.DataLoader(testset, batch_size=4,
                                          shuffle=False, num_workers=2)
-    
-    
-    
-    
+
+
+
+
+
     criterion = nn.MSELoss()
-    optimizer = torch.optim.Adam(net.parameters(), lr=1e-2)
-    
+    optimizer = torch.optim.Adam(net.parameters(), lr=10e-3)
+
     " train net "
     epochs = []
     losses = []
@@ -61,7 +66,9 @@ if __name__ == "__main__":
     ax.set_xlabel('epoch')
     Ln, = ax.plot([0],[1])
     pylab.show()
-    
+
+    scheduler = torch.optim.lr_scheduler.StepLR(optimizer, step_size=10, gamma=0.5)
+
     for epoch in range(1000):  # loop over the dataset multiple times
     
         running_loss = 0.0
@@ -77,11 +84,11 @@ if __name__ == "__main__":
             loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
-    
+
             running_loss += loss.item()
             
-        print('[%d, %5d] total loss: %.3f' %
-              (epoch + 1, i + 1, running_loss))
+        print('[%d, %5d] total loss: %.3f' %n
+              (epoch + 1, i + 1, running_loss,))
         epochs.append(epoch+1)
         losses.append(running_loss)
         Ln.set_ydata(losses)
@@ -93,8 +100,12 @@ if __name__ == "__main__":
         plt.pause(0.1)
         
         running_loss = 0.0
-                
-    
+
+        scheduler.step()
+        print('lr: ' + str(scheduler.get_lr()))
+
+
+
     print('Finished Training')
     " save "
     PATH = './Trained.pth'
