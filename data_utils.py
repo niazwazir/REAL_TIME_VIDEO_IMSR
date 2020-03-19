@@ -21,7 +21,7 @@ def calculate_valid_crop_size(crop_size, upscale_factor):
     return crop_size - (crop_size % upscale_factor)
 
 def blur(img):
-    img2 = img.filter(ImageFilter.GaussianBlur(2))
+    img2 = img.filter(ImageFilter.GaussianBlur(0.2))
     return img2
 
 

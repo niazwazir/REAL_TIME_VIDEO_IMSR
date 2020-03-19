@@ -16,8 +16,6 @@ import pylab
 import matplotlib.pyplot as plt
 
 
-
-
 if __name__ == "__main__":
     UPSCALE_FACTOR = 2
     net = Net(upscale_factor=UPSCALE_FACTOR)
@@ -48,11 +46,10 @@ if __name__ == "__main__":
     
     testloader = torch.utils.data.DataLoader(testset, batch_size=4,
                                          shuffle=False, num_workers=2)
-
-
-
-
-
+    
+    
+    
+    
     criterion = nn.MSELoss()
     optimizer = torch.optim.Adam(net.parameters(), lr=10e-3)
 
