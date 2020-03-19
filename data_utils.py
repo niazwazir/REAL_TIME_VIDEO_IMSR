@@ -98,5 +98,6 @@ if __name__ == "__main__":
     opt = parser.parse_args()
     UPSCALE_FACTOR = opt.upscale_factor
 
-    generate_dataset(data_type='original_data', upscale_factor=UPSCALE_FACTOR, data_target='train')
+    generate_dataset(data_type='original_data/train', upscale_factor=UPSCALE_FACTOR, data_target='train')
+    generate_dataset(data_type='original_data/test/Set5', upscale_factor=UPSCALE_FACTOR, data_target='test')
     generate_dataset(data_type='val', upscale_factor=UPSCALE_FACTOR, data_target='val')
